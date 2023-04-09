@@ -44,12 +44,15 @@ struct LEVELDB_EXPORT Options {
   // REQUIRES: The client must ensure that the comparator supplied
   // here has the same name and orders keys *exactly* the same as the
   // comparator provided to previous open calls on the same DB.
+  // 传入的 comparator
   const Comparator* comparator;
 
   // If true, the database will be created if it is missing.
+  // open 时,如果 db 目录不存在就创建
   bool create_if_missing = false;
 
   // If true, an error is raised if the database already exists.
+  // open 时,如果 db 目录存在就报错
   bool error_if_exists = false;
 
   // If true, the implementation will do aggressive checking of the
@@ -57,6 +60,7 @@ struct LEVELDB_EXPORT Options {
   // errors.  This may have unforeseen ramifications: for example, a
   // corruption of one DB entry may cause a large number of entries to
   // become unreadable or for the entire DB to become unopenable.
+  // 是否保存中间的错误状态(RecoverLog/compact),compact 时是否读到的 block 做检验。
   bool paranoid_checks = false;
 
   // Use the specified object to interact with the environment,
@@ -147,16 +151,19 @@ struct LEVELDB_EXPORT Options {
 struct LEVELDB_EXPORT ReadOptions {
   // If true, all data read from underlying storage will be
   // verified against corresponding checksums.
+  // 是否对读到的 block 做校验
   bool verify_checksums = false;
 
   // Should the data read for this iteration be cached in memory?
   // Callers may wish to set this field to false for bulk scans.
+  // 读到的 block 是否加入 block cache
   bool fill_cache = true;
 
   // If "snapshot" is non-null, read as of the supplied snapshot
   // (which must belong to the DB that is being read and which must
   // not have been released).  If "snapshot" is null, use an implicit
   // snapshot of the state at the beginning of this read operation.
+  // 指定读取的 SnapShot
   const Snapshot* snapshot = nullptr;
 };
 
@@ -178,6 +185,7 @@ struct LEVELDB_EXPORT WriteOptions {
   // crash semantics as the "write()" system call.  A DB write
   // with sync==true has similar crash semantics to a "write()"
   // system call followed by "fsync()".
+  // write 时,记 binlog 之后,是否对 binlog 做 sync。
   bool sync = false;
 };
 
